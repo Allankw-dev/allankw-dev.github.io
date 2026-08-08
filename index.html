@@ -368,6 +368,70 @@
   .edu-card .expand-hint{display:block; margin-top:14px;}
   .proj-links{display:flex; align-items:center; gap:14px; font-family:var(--font-mono); font-size:.8rem;}
 
+  /* GALLERY */
+  .gallery-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:20px;
+  }
+  .gallery-item{
+    position:relative; border-radius:12px; overflow:hidden;
+    border:1px solid var(--line); cursor:pointer;
+    aspect-ratio:4/3;
+    background:var(--bg-panel);
+  }
+  .gallery-item img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition:transform .5s ease, filter .3s ease;
+  }
+  .gallery-item:hover img{transform:scale(1.06); filter:brightness(1.05);}
+  .gallery-item figcaption{
+    position:absolute; left:0; right:0; bottom:0;
+    padding:16px 18px 14px;
+    background:linear-gradient(0deg, rgba(3,4,10,.92), rgba(3,4,10,0));
+    font-family:var(--font-mono); font-size:.78rem; color:var(--text);
+  }
+  .gallery-item:focus-visible{outline:2px solid var(--cyan); outline-offset:3px;}
+
+  /* image lightbox */
+  .lightbox-overlay{
+    position:fixed; inset:0; background:rgba(3,4,9,.88); backdrop-filter:blur(6px);
+    z-index:110; display:flex; align-items:center; justify-content:center;
+    padding:6vh 5vw; opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  .lightbox-overlay.open{opacity:1; pointer-events:auto;}
+  .lightbox-overlay img{
+    max-width:100%; max-height:80vh; border-radius:10px;
+    border:1px solid rgba(77,216,255,.25);
+    box-shadow:0 30px 80px rgba(0,0,0,.6);
+  }
+  .lightbox-caption{
+    text-align:center; font-family:var(--font-mono); font-size:.82rem;
+    color:var(--text-dim); margin-top:16px;
+  }
+  .lightbox-close{
+    position:fixed; top:26px; right:6vw;
+    width:40px; height:40px; border-radius:8px; border:1px solid var(--line);
+    background:rgba(11,14,26,.8); color:var(--text-dim); cursor:pointer; font-size:1.2rem;
+    display:flex; align-items:center; justify-content:center; transition:all .2s;
+    z-index:111;
+  }
+  .lightbox-close:hover{color:var(--cyan); border-color:var(--cyan);}
+  .lightbox-nav{
+    position:fixed; top:50%; transform:translateY(-50%);
+    width:44px; height:44px; border-radius:50%; border:1px solid var(--line);
+    background:rgba(11,14,26,.8); color:var(--text-dim); cursor:pointer; font-size:1.3rem;
+    display:flex; align-items:center; justify-content:center; transition:all .2s;
+    z-index:111;
+  }
+  .lightbox-nav:hover{color:var(--cyan); border-color:var(--cyan);}
+  .lightbox-prev{left:4vw;}
+  .lightbox-next{right:4vw;}
+  @media (max-width:640px){
+    .lightbox-nav{width:36px; height:36px; font-size:1.1rem;}
+    .lightbox-prev{left:12px;} .lightbox-next{right:12px;}
+    .lightbox-close{top:16px; right:16px;}
+  }
+
   /* MODAL */
   .modal-overlay{
     position:fixed; inset:0; background:rgba(3,4,9,.75); backdrop-filter:blur(6px);
@@ -422,6 +486,7 @@
     <a href="#education" data-nav="education">education</a>
     <a href="#projects" data-nav="projects">projects</a>
     <a href="#skills" data-nav="skills">skills</a>
+    <a href="#highlights" data-nav="highlights">highlights</a>
     <a href="#contact" data-nav="contact">contact</a>
   </div>
   <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -601,6 +666,28 @@
   </div>
 </section>
 
+<section id="highlights">
+  <div class="section-head">
+    <div class="eyebrow">community &amp; learning</div>
+    <h2>Beyond the code</h2>
+    <p>Recently spent time at Microsoft's Nairobi office sitting in on a software engineering session — a good chance to compare how the discipline is taught against how it's actually practiced day to day, and to talk shop with other developers in the room.</p>
+  </div>
+  <div class="gallery-grid">
+    <figure class="gallery-item" data-lightbox="0">
+      <img src="images/microsoft-lobby.jpg" alt="Microsoft office lobby in Nairobi with a woven wooden installation and the Microsoft logo" loading="lazy">
+      <figcaption>Microsoft's Nairobi office</figcaption>
+    </figure>
+    <figure class="gallery-item" data-lightbox="1">
+      <img src="images/microsoft-session.jpg" alt="Presentation slide titled Software Engineering in a nutshell, covering reading, writing, reviewing, testing, and designing code" loading="lazy">
+      <figcaption>Session: "Software Engineering in a nutshell"</figcaption>
+    </figure>
+    <figure class="gallery-item" data-lightbox="2">
+      <img src="images/microsoft-lounge.jpg" alt="Group of developers talking in a lounge area at the Microsoft Nairobi office" loading="lazy">
+      <figcaption>Between sessions, talking shop</figcaption>
+    </figure>
+  </div>
+</section>
+
 <section id="contact">
   <div class="contact-panel">
     <div class="eyebrow" style="justify-content:center;">contact</div>
@@ -765,7 +852,7 @@
 
   // scroll-reveal for sections and cards
   (function(){
-    var targets = document.querySelectorAll('.section-head, .edu-card, .proj-card, .skill-cat, .stack-panel, .contact-panel');
+    var targets = document.querySelectorAll('.section-head, .edu-card, .proj-card, .skill-cat, .stack-panel, .contact-panel, .gallery-item');
     targets.forEach(function(el){ el.classList.add('reveal'); });
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
@@ -795,6 +882,16 @@
     sections.forEach(function(s){ io.observe(s); });
   })();
 </script>
+
+<div class="lightbox-overlay" id="lightboxOverlay" role="dialog" aria-modal="true">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close image">✕</button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous image">‹</button>
+  <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next image">›</button>
+  <div>
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+</div>
 
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal">
@@ -924,6 +1021,62 @@
     overlay.addEventListener('click', function(e){ if(e.target === overlay) closeModal(); });
     document.addEventListener('keydown', function(e){
       if(e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+    });
+  })();
+
+  // image lightbox for the gallery
+  (function(){
+    var items = Array.prototype.slice.call(document.querySelectorAll('.gallery-item'));
+    if(!items.length) return;
+    var overlay = document.getElementById('lightboxOverlay');
+    var imgEl = document.getElementById('lightboxImg');
+    var captionEl = document.getElementById('lightboxCaption');
+    var closeBtn = document.getElementById('lightboxClose');
+    var prevBtn = document.getElementById('lightboxPrev');
+    var nextBtn = document.getElementById('lightboxNext');
+    var current = 0;
+    var lastFocused = null;
+
+    function show(index){
+      current = (index + items.length) % items.length;
+      var item = items[current];
+      var img = item.querySelector('img');
+      imgEl.src = img.src;
+      imgEl.alt = img.alt;
+      captionEl.textContent = item.querySelector('figcaption').textContent;
+    }
+    function open(index){
+      lastFocused = document.activeElement;
+      show(index);
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+    function close(){
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      if(lastFocused) lastFocused.focus();
+    }
+
+    items.forEach(function(item, i){
+      item.setAttribute('tabindex', '0');
+      item.setAttribute('role', 'button');
+      item.setAttribute('aria-label', 'View larger image: ' + item.querySelector('figcaption').textContent);
+      item.addEventListener('click', function(){ open(i); });
+      item.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(i); }
+      });
+    });
+
+    closeBtn.addEventListener('click', close);
+    prevBtn.addEventListener('click', function(){ show(current - 1); });
+    nextBtn.addEventListener('click', function(){ show(current + 1); });
+    overlay.addEventListener('click', function(e){ if(e.target === overlay) close(); });
+    document.addEventListener('keydown', function(e){
+      if(!overlay.classList.contains('open')) return;
+      if(e.key === 'Escape') close();
+      if(e.key === 'ArrowLeft') show(current - 1);
+      if(e.key === 'ArrowRight') show(current + 1);
     });
   })();
 </script>
