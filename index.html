@@ -65,6 +65,59 @@
     pointer-events:none;
   }
 
+  /* BOOT LOADER */
+  .boot-loader{
+    position:fixed; inset:0; z-index:300;
+    background:var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .6s ease, visibility .6s ease;
+  }
+  .boot-loader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  .boot-content{ text-align:center; }
+  .boot-logo{
+    font-family:var(--font-display); font-weight:700; font-size:2.2rem;
+    color:var(--cyan); letter-spacing:.04em; margin-bottom:26px;
+    text-shadow:0 0 24px rgba(77,216,255,.5);
+  }
+  .boot-lines{
+    font-family:var(--font-mono); font-size:.8rem; color:var(--text-dim);
+    min-height:1.4em; margin-bottom:22px; letter-spacing:.02em;
+  }
+  .boot-bar{
+    width:220px; height:2px; background:var(--line); border-radius:2px;
+    overflow:hidden; margin:0 auto;
+  }
+  .boot-bar-fill{
+    height:100%; width:0%;
+    background:linear-gradient(90deg, var(--cyan), var(--purple));
+    transition:width .35s ease;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .boot-loader{ transition:none; display:none; }
+  }
+
+  /* SCROLL PROGRESS */
+  .scroll-progress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg, var(--cyan), var(--purple));
+    box-shadow:0 0 10px rgba(77,216,255,.6);
+    z-index:70; transition:width .12s linear;
+  }
+
+  /* CURSOR GLOW */
+  .cursor-glow{
+    position:fixed; top:0; left:0; width:26px; height:26px; border-radius:50%;
+    background:radial-gradient(circle, rgba(77,216,255,.4), rgba(165,107,255,.12) 55%, transparent 75%);
+    pointer-events:none; z-index:90; opacity:0;
+    transform:translate(-50%,-50%);
+    transition:opacity .3s ease;
+    mix-blend-mode:screen;
+  }
+  .cursor-glow.active{ opacity:1; }
+  @media (pointer:coarse), (prefers-reduced-motion: reduce){
+    .cursor-glow{ display:none; }
+  }
+
   section{position:relative; z-index:1; padding:120px 8vw;}
   @media (max-width:720px){ section{padding:80px 6vw;} }
 
@@ -216,11 +269,76 @@
   .about-text p{color:var(--text-dim); margin-bottom:18px; font-size:1.02rem;}
   .about-text strong{color:var(--text); font-weight:500;}
 
+  .sync-indicator{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:.72rem; color:var(--text-faint);
+    margin-bottom:18px;
+  }
+  .sync-dot{
+    width:6px; height:6px; border-radius:50%; background:var(--text-faint);
+    transition:background .3s, box-shadow .3s;
+  }
+  .sync-indicator.live .sync-dot{
+    background:var(--green); box-shadow:0 0 6px var(--green);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  .sync-indicator.live{color:var(--text-dim);}
+
+  .stats-row{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+    margin-top:36px;
+  }
+  @media (max-width:640px){ .stats-row{grid-template-columns:repeat(2,1fr);} }
+  .stat-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:10px;
+    padding:20px 12px; text-align:center; position:relative; overflow:hidden;
+    transition:border-color .25s, transform .25s;
+  }
+  .stat-card::before{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 0%, rgba(77,216,255,.1), transparent 70%);
+    pointer-events:none;
+  }
+  .stat-card:hover{border-color:rgba(77,216,255,.4); transform:translateY(-3px);}
+  .stat-num{
+    font-family:var(--font-display); font-weight:700;
+    font-size:clamp(1.5rem,3vw,2rem);
+    background:linear-gradient(120deg, var(--cyan), var(--purple));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    line-height:1;
+  }
+  .stat-label{
+    font-family:var(--font-mono); font-size:.66rem; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:.08em; margin-top:8px;
+  }
+
   .stack-panel{
     background:var(--bg-panel);
     border:1px solid var(--line);
     border-radius:10px;
     overflow:hidden;
+    position:relative;
+    box-shadow:0 0 0 rgba(77,216,255,0);
+    transition:box-shadow .4s ease, border-color .4s ease;
+  }
+  .stack-panel:hover{
+    border-color:rgba(77,216,255,.3);
+    box-shadow:0 0 40px rgba(77,216,255,.08);
+  }
+  .stack-panel::before{
+    content:'';
+    position:absolute; top:0; left:-40%; width:40%; height:2px;
+    background:linear-gradient(90deg, transparent, var(--cyan), transparent);
+    animation:scan-line 4s ease-in-out infinite;
+    z-index:2;
+  }
+  @keyframes scan-line{
+    0%{ left:-40%; }
+    50%{ left:100%; }
+    100%{ left:100%; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .stack-panel::before{ animation:none; display:none; }
   }
   .stack-panel-head{
     padding:14px 20px;
@@ -368,6 +486,48 @@
   .edu-card .expand-hint{display:block; margin-top:14px;}
   .proj-links{display:flex; align-items:center; gap:14px; font-family:var(--font-mono); font-size:.8rem;}
 
+  /* MORE FROM GITHUB (auto-updating) */
+  .more-repos{margin-top:56px; padding-top:48px; border-top:1px solid var(--line);}
+  .more-repos-head{margin-bottom:28px;}
+  .more-repos-head h3{font-size:1.3rem; margin-bottom:8px;}
+  .more-repos-head p{color:var(--text-dim); font-size:.9rem;}
+  .repo-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:18px;
+  }
+  .repo-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:10px;
+    padding:22px; opacity:0; transform:translateY(14px);
+    transition:opacity .5s ease, transform .5s ease, border-color .25s;
+  }
+  .repo-card.show{opacity:1; transform:translateY(0);}
+  .repo-card:hover{border-color:rgba(77,216,255,.3);}
+  .repo-card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;}
+  .repo-card h4{font-family:var(--font-display); font-size:1.05rem; font-weight:600;}
+  .repo-live-badge{
+    font-family:var(--font-mono); font-size:.65rem; color:var(--green);
+    border:1px solid rgba(77,255,160,.3); border-radius:20px;
+    padding:3px 9px; white-space:nowrap; text-transform:uppercase; letter-spacing:.06em;
+  }
+  .repo-card p.repo-desc{color:var(--text-dim); font-size:.85rem; margin-bottom:16px; min-height:2.6em;}
+  .repo-card-meta{
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:var(--font-mono); font-size:.75rem; color:var(--text-faint);
+  }
+  .repo-card-links{display:flex; gap:12px;}
+  .repo-card-links a{color:var(--purple);}
+  .repo-card-links a:hover{color:var(--cyan);}
+  .repo-skeleton{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:10px;
+    height:150px; position:relative; overflow:hidden;
+  }
+  .repo-skeleton::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(90deg, transparent, rgba(77,216,255,.06), transparent);
+    animation:skeleton-sweep 1.6s ease-in-out infinite;
+  }
+  @keyframes skeleton-sweep{ 0%{transform:translateX(-100%);} 100%{transform:translateX(100%);} }
+
   /* GALLERY */
   .gallery-grid{
     display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
@@ -477,6 +637,17 @@
 </head>
 <body>
 
+<div class="boot-loader" id="bootLoader" aria-hidden="true">
+  <div class="boot-content">
+    <div class="boot-logo">&lt;AK/&gt;</div>
+    <div class="boot-lines" id="bootLoaderLines">establishing connection…</div>
+    <div class="boot-bar"><div class="boot-bar-fill" id="bootBarFill"></div></div>
+  </div>
+</div>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
 <canvas id="bgCanvas" aria-hidden="true"></canvas>
 
 <nav>
@@ -514,6 +685,28 @@
       <p>I'm a Computer Science student who builds full-stack products independently alongside coursework — not just prototypes, but systems that stay up. That means writing the API, designing the schema, and also configuring the VCN, the security lists, and the process manager that keeps it running.</p>
       <p>My recent work spans an <strong>AI-powered hiring platform</strong> built on FastAPI and Supabase, and a <strong>relational database + CRUD API</strong> deployed on Oracle Cloud Infrastructure for a household energy consumption dataset. Both taught me the same lesson: the interesting bugs live at the boundary between your code and the infrastructure it runs on.</p>
       <p>Outside of shipping projects, I'm active on <strong>GitHub</strong>, documenting builds and deployment runbooks as I go.</p>
+      <div class="sync-indicator" id="syncIndicator">
+        <span class="sync-dot"></span>
+        <span id="syncLabel">syncing with GitHub…</span>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" data-stat="contributions" data-target="1000" data-suffix="+">0</div>
+          <div class="stat-label">Contributions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-stat="followers" data-target="500" data-suffix="+">0</div>
+          <div class="stat-label">Followers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-stat="repos" data-target="24" data-suffix="+">0</div>
+          <div class="stat-label">Repositories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" data-stat="deployed" data-target="2" data-suffix="+">0</div>
+          <div class="stat-label">Deployed Systems</div>
+        </div>
+      </div>
     </div>
     <div class="stack-panel">
       <div class="stack-panel-head">
@@ -563,7 +756,7 @@
 
   <div class="projects">
 
-    <div class="proj-card" data-project="hiring" tabindex="0" role="button" aria-haspopup="dialog">
+    <div class="proj-card tilt-card" data-project="hiring" tabindex="0" role="button" aria-haspopup="dialog">
       <div class="proj-top">
         <div>
           <h3>AI Hiring Platform</h3>
@@ -591,7 +784,7 @@
       </div>
     </div>
 
-    <div class="proj-card" data-project="power" tabindex="0" role="button" aria-haspopup="dialog">
+    <div class="proj-card tilt-card" data-project="power" tabindex="0" role="button" aria-haspopup="dialog">
       <div class="proj-top">
         <div>
           <h3>Power Consumption DB &amp; API</h3>
@@ -619,6 +812,14 @@
       </div>
     </div>
 
+  </div>
+
+  <div class="more-repos" id="moreReposSection" hidden>
+    <div class="more-repos-head">
+      <h3>More from GitHub</h3>
+      <p>Auto-pulled live from my GitHub — new projects appear here the moment I deploy them.</p>
+    </div>
+    <div class="repo-grid" id="repoGrid"></div>
   </div>
 </section>
 
@@ -814,6 +1015,238 @@
     } else {
       requestAnimationFrame(frame);
     }
+  })();
+
+  // boot-sequence loading screen
+  (function(){
+    var loader = document.getElementById('bootLoader');
+    if(!loader) return;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduceMotion){ loader.classList.add('hide'); document.body.style.overflow = ''; return; }
+
+    document.body.style.overflow = 'hidden';
+    var linesEl = document.getElementById('bootLoaderLines');
+    var barFill = document.getElementById('bootBarFill');
+    var lines = ['establishing connection…', 'decrypting portfolio…', 'rendering interface…', 'welcome.'];
+    var i = 0;
+
+    function next(){
+      if(i < lines.length){
+        linesEl.textContent = lines[i];
+        barFill.style.width = Math.round(((i + 1) / lines.length) * 100) + '%';
+        i++;
+        setTimeout(next, 420);
+      } else {
+        setTimeout(function(){
+          loader.classList.add('hide');
+          document.body.style.overflow = '';
+        }, 250);
+      }
+    }
+    next();
+  })();
+
+  // scroll progress bar
+  (function(){
+    var bar = document.getElementById('scrollProgress');
+    if(!bar) return;
+    var ticking = false;
+    function update(){
+      var h = document.documentElement;
+      var scrollable = h.scrollHeight - h.clientHeight;
+      var pct = scrollable > 0 ? (h.scrollTop / scrollable) * 100 : 0;
+      bar.style.width = pct + '%';
+      ticking = false;
+    }
+    window.addEventListener('scroll', function(){
+      if(!ticking){ requestAnimationFrame(update); ticking = true; }
+    });
+    update();
+  })();
+
+  // cursor glow (desktop, motion-enabled only)
+  (function(){
+    var glow = document.getElementById('cursorGlow');
+    if(!glow) return;
+    if(window.matchMedia('(pointer:coarse)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var tx = 0, ty = 0, cx = 0, cy = 0, active = false;
+    window.addEventListener('mousemove', function(e){
+      tx = e.clientX; ty = e.clientY;
+      if(!active){ active = true; glow.classList.add('active'); cx = tx; cy = ty; loop(); }
+    });
+    document.addEventListener('mouseleave', function(){ glow.classList.remove('active'); active = false; });
+    function loop(){
+      cx += (tx - cx) * 0.18;
+      cy += (ty - cy) * 0.18;
+      glow.style.transform = 'translate(' + cx + 'px,' + cy + 'px) translate(-50%,-50%)';
+      if(active) requestAnimationFrame(loop);
+    }
+  })();
+
+  // 3D tilt on project / repo cards
+  (function(){
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isCoarse = window.matchMedia('(pointer:coarse)').matches;
+    if(reduceMotion || isCoarse) return;
+
+    window.enableTilt = function(el){
+      el.addEventListener('mousemove', function(e){
+        var rect = el.getBoundingClientRect();
+        var x = e.clientX - rect.left, y = e.clientY - rect.top;
+        var rotY = ((x - rect.width / 2) / (rect.width / 2)) * 5;
+        var rotX = -((y - rect.height / 2) / (rect.height / 2)) * 5;
+        el.style.transform = 'perspective(800px) rotateX(' + rotX.toFixed(2) + 'deg) rotateY(' + rotY.toFixed(2) + 'deg) translateY(-4px)';
+      });
+      el.addEventListener('mouseleave', function(){ el.style.transform = ''; });
+    };
+    document.querySelectorAll('.tilt-card').forEach(window.enableTilt);
+  })();
+
+  // ── Live GitHub sync: stats + auto-updating "More from GitHub" grid ──
+  (function(){
+    var GH_USER = 'Allankw-dev';
+    // repos to skip from the auto grid because they're already featured above,
+    // or aren't "projects" (profile README repo, this site's own repo).
+    var SKIP_REPOS = ['allankw-dev', 'allankw-dev.github.io', 'power-consumption-db-api'];
+    var SKIP_NAME_HINTS = ['hiring']; // catches the AI hiring platform repo under any exact name
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var statEls = {};
+    document.querySelectorAll('.stat-num[data-stat]').forEach(function(el){
+      statEls[el.getAttribute('data-stat')] = el;
+    });
+    var countedEls = new WeakSet();
+
+    function animateTo(el, target){
+      var suffix = el.getAttribute('data-suffix') || '';
+      if(reduceMotion){ el.textContent = target.toLocaleString() + suffix; countedEls.add(el); return; }
+      var start = parseInt(el.textContent.replace(/[,+]/g,''), 10) || 0;
+      var t0 = null, duration = 1000;
+      function step(ts){
+        if(t0 === null) t0 = ts;
+        var p = Math.min((ts - t0) / duration, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(start + (target - start) * eased).toLocaleString() + (p < 1 ? '' : suffix);
+        if(p < 1) requestAnimationFrame(step);
+        else { el.textContent = target.toLocaleString() + suffix; countedEls.add(el); }
+      }
+      requestAnimationFrame(step);
+    }
+
+    function setStat(key, value){
+      var el = statEls[key];
+      if(!el || value === null || value === undefined || isNaN(value)) return;
+      el.setAttribute('data-target', value);
+      el.removeAttribute('data-suffix'); // real live number replaces the "1000+" placeholder
+      // only animate immediately if it's already been counted once (visible on screen);
+      // otherwise the scroll-triggered observer will pick up the new data-target.
+      if(countedEls.has(el)) animateTo(el, value);
+    }
+
+    // scroll-triggered initial count-up, using whatever data-target is current at that time
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var el = entry.target;
+          var target = parseInt(el.getAttribute('data-target'), 10) || 0;
+          animateTo(el, target);
+          io.unobserve(el);
+        }
+      });
+    }, { threshold:0.4 });
+    Object.values(statEls).forEach(function(el){ io.observe(el); });
+
+    function markSynced(ok){
+      var indicator = document.getElementById('syncIndicator');
+      var label = document.getElementById('syncLabel');
+      if(!indicator || !label) return;
+      if(ok){
+        indicator.classList.add('live');
+        label.textContent = 'live-synced with GitHub';
+      } else {
+        label.textContent = 'showing last known stats';
+      }
+    }
+
+    function renderRepoGrid(repos){
+      var section = document.getElementById('moreReposSection');
+      var grid = document.getElementById('repoGrid');
+      if(!section || !grid) return;
+      if(!repos.length){ section.hidden = true; return; }
+      section.hidden = false;
+      grid.innerHTML = '';
+      repos.slice(0, 6).forEach(function(repo, i){
+        var card = document.createElement('div');
+        card.className = 'repo-card tilt-card';
+        var isLive = !!(repo.homepage && repo.homepage.trim());
+        card.innerHTML =
+          '<div class="repo-card-top">' +
+            '<h4>' + repo.name + '</h4>' +
+            (isLive ? '<span class="repo-live-badge">● live</span>' : '') +
+          '</div>' +
+          '<p class="repo-desc">' + (repo.description ? repo.description : 'No description yet.') + '</p>' +
+          '<div class="repo-card-meta">' +
+            '<span>' + (repo.language || '—') + (repo.stargazers_count ? ' · ★ ' + repo.stargazers_count : '') + '</span>' +
+            '<div class="repo-card-links">' +
+              (isLive ? '<a href="' + repo.homepage + '" target="_blank" rel="noopener">Live ↗</a>' : '') +
+              '<a href="' + repo.html_url + '" target="_blank" rel="noopener">Code ↗</a>' +
+            '</div>' +
+          '</div>';
+        grid.appendChild(card);
+        if(window.enableTilt) window.enableTilt(card);
+        setTimeout(function(){ card.classList.add('show'); }, i * 90);
+      });
+    }
+
+    async function syncWithGitHub(){
+      var ok = true;
+
+      // followers + public repo count (official API)
+      try{
+        var userRes = await fetch('https://api.github.com/users/' + GH_USER);
+        if(!userRes.ok) throw new Error('user fetch failed');
+        var user = await userRes.json();
+        setStat('followers', user.followers);
+        setStat('repos', user.public_repos);
+      } catch(e){ ok = false; }
+
+      // repo list — used for both the "deployed" stat and the auto grid
+      try{
+        var reposRes = await fetch('https://api.github.com/users/' + GH_USER + '/repos?per_page=100&sort=pushed');
+        if(!reposRes.ok) throw new Error('repos fetch failed');
+        var repos = await reposRes.json();
+        var deployed = repos.filter(function(r){ return !r.fork && r.homepage && r.homepage.trim(); });
+        setStat('deployed', deployed.length);
+
+        var forGrid = repos.filter(function(r){
+          var nameLower = r.name.toLowerCase();
+          if(SKIP_REPOS.indexOf(nameLower) !== -1) return false;
+          if(SKIP_NAME_HINTS.some(function(h){ return nameLower.indexOf(h) !== -1; })) return false;
+          return !r.fork;
+        });
+        renderRepoGrid(forGrid);
+      } catch(e){ ok = false; }
+
+      // total contributions — best-effort via a third-party contributions API
+      // (GitHub's own public API doesn't expose this without auth). Falls back
+      // to the static number in data-target if this service is unreachable.
+      try{
+        var contribRes = await fetch('https://github-contributions-api.jogruber.de/v4/' + GH_USER + '?y=all');
+        if(contribRes.ok){
+          var contribData = await contribRes.json();
+          var total = null;
+          if(contribData && contribData.total){
+            if(typeof contribData.total === 'number') total = contribData.total;
+            else total = Object.values(contribData.total).reduce(function(sum, v){ return sum + (Number(v) || 0); }, 0);
+          }
+          if(total !== null && total > 0) setStat('contributions', total);
+        }
+      } catch(e){ /* silent fallback to static value */ }
+
+      markSynced(ok);
+    }
+
+    syncWithGitHub();
   })();
 
   // simple boot-line typing effect for the hero kicker
