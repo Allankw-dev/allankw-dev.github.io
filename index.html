@@ -83,13 +83,17 @@ h2{font-weight:800;font-size:clamp(30px,4.4vw,48px);line-height:1.08;letter-spac
 .svc h3{font-size:17px;margin:16px 0 8px}
 .svc p{font-size:14px;color:var(--mute)}
 .svc small{display:block;margin-top:16px;font-size:12px;color:#666}
-.feat{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:36px;padding:34px;cursor:pointer}
+.feat{display:grid;grid-template-columns:.85fr 1.15fr;gap:36px;margin-top:36px;padding:34px;cursor:pointer}
 .feat:hover{border-color:#2b4a31}
 .live{display:inline-block;font-size:12px;padding:3px 11px;border-radius:99px;background:rgba(44,240,78,.1);color:var(--g);margin-bottom:14px}
 .feat h3{font-size:clamp(24px,3vw,32px);letter-spacing:-.03em;line-height:1.15}
 .feat p{color:var(--mute);margin:14px 0}
 .tags{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}
 .tags i{font-style:normal;font-size:12px;color:#aaa;border:1px solid var(--line);border-radius:7px;padding:3px 10px}
+.shot{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0b0b0b;align-self:center;box-shadow:0 24px 70px rgba(0,0,0,.65),0 0 60px rgba(44,240,78,.08)}
+.shot .bar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:#141414;border-bottom:1px solid var(--line);font-size:11px;color:#777}
+.shot .bar i{width:9px;height:9px;border-radius:50%;background:#2a2a2a}.shot .bar span{margin-left:10px}
+.shot img{display:block;width:100%;height:auto}
 .arch{background:#fff;color:#111;border-radius:16px;padding:20px;align-self:center}
 .arch .h{font-size:12px;color:#777;margin-bottom:12px}
 .hop{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid #e6e6e6;border-radius:11px;font-size:14px;font-weight:600}
@@ -170,7 +174,7 @@ dialog.pic{background:none;border:0;width:min(980px,94vw);overflow:visible}dialo
 <div class="badge"><i></i>Open to entry-level roles, internships and freelance work, remote or in Nairobi</div>
 <p class="who">Allan Kamau, full-stack developer in Nairobi, Kenya</p>
 <h1>I build software that <em>stays up</em> in production.</h1>
-<p class="lede">I'm a Computer Science student who designs the <b>API and database</b>, then deploys it myself. That includes an <b>AI hiring platform</b>, a <b>school fee system</b>, and a database API running on <b>Oracle Cloud</b>.</p>
+<p class="lede">I'm a Computer Science student who designs the <b>API and database</b>, then deploys it myself. That includes a <b>school fee system</b>, an <b>AI hiring platform</b>, and a database API running on <b>Oracle Cloud</b>.</p>
 <div class="cta"><a class="btn g" href="#contact">Start a project</a><a class="btn" href="#work">See my work</a><a class="btn" href="https://github.com/Allankw-dev" rel="noopener">GitHub</a><a class="btn cvl" href="Allan-Kamau-CV.pdf" download hidden>Download CV</a><a class="btn lil" href="#" rel="noopener" hidden>LinkedIn</a></div>
 <div class="meta"><span>Nairobi, Kenya</span><span>Computer Science, class of 2027</span><span>github.com/Allankw-dev</span></div>
 </div>
@@ -178,8 +182,8 @@ dialog.pic{background:none;border:0;width:min(980px,94vw);overflow:visible}dialo
 <div class="toast"><b>Live now:</b> Ledgr on Vercel</div>
 <div class="me"><div class="av">AK</div><div><b>Allan Kamau</b><span>Full-stack developer, backend focus</span></div></div>
 <div class="rw">Recent work</div>
-<div class="row"><div class="ic">AI</div><div><b>AI Hiring Platform</b><small>FastAPI, Streamlit, Supabase</small></div><span class="st">Live</span></div>
 <div class="row"><div class="ic">Lg</div><div><b>Ledgr</b><small>School fee management</small></div><span class="st">Live</span></div>
+<div class="row"><div class="ic">AI</div><div><b>AI Hiring Platform</b><small>FastAPI, Streamlit, Supabase</small></div><span class="st">Live</span></div>
 <div class="row"><div class="ic">DB</div><div><b>Power Consumption API</b><small>Express, PostgreSQL, OCI</small></div><span class="st">Live</span></div>
 <div class="cf"><span>FastAPI, React, PostgreSQL</span><a href="#work">View work</a></div>
 </div>
@@ -194,7 +198,7 @@ dialog.pic{background:none;border:0;width:min(980px,94vw);overflow:visible}dialo
 <div class="abt">
 <div>
 <p>I've been building full-stack products on my own alongside my degree, and I care about the parts that usually get skipped: rate limiting, secrets, deployment, and what happens when the free tier cuts you off.</p>
-<p>My biggest builds are an <b>AI-powered hiring platform</b>, <b>Ledgr</b> for school fee management, and a <b>database and API on Oracle Cloud</b> that I led for a university group project. I write the code, design the schema, and configure the network it runs on.</p>
+<p>My biggest builds are <b>Ledgr</b> for school fee management, an <b>AI-powered hiring platform</b>, and a <b>database and API on Oracle Cloud</b> that I led for a university group project. I write the code, design the schema, and configure the network it runs on.</p>
 <p>If you need a developer who can turn an idea into something people rely on, I'm open to internships, freelance projects, and collaboration, <b>remote or in Nairobi</b>.</p>
 </div>
 <div class="stats">
@@ -218,19 +222,15 @@ dialog.pic{background:none;border:0;width:min(980px,94vw);overflow:visible}dialo
 <section id="work"><div class="w">
 <div class="k">Selected work</div>
 <h2>Things I've built and <em>shipped</em>.</h2>
-<div class="card feat" data-p="hira" tabindex="0" role="button" aria-label="Open AI Hiring Platform case study">
-<div><span class="live">Live on Render</span><h3>AI Hiring Platform</h3>
-<p>Recruiters post roles, candidates upload resumes, and the system ranks them with TF-IDF and cosine similarity in scikit-learn. An assistant named Hira helps recruiters, and the backend is hardened for production.</p>
-<div class="tags"><i>FastAPI</i><i>Streamlit</i><i>PostgreSQL</i><i>Supabase</i><i>JWT</i></div>
-<a class="btn g" href="https://ai-powered-hiring-system.streamlit.app" rel="noopener">Open the live app</a></div>
-<div class="arch"><div class="h">How a request travels</div>
-<div class="hop">Streamlit interface<small>Streamlit Cloud</small></div>
-<div class="hop">FastAPI backend<small>Render</small></div>
-<div class="hop">PostgreSQL<small>Supabase</small></div>
-<div class="chk"><span>bcrypt</span><span>slowapi rate limits</span><span>bleach sanitization</span><span>CORS</span><span>background email</span></div></div>
+<div class="card feat" data-p="ledgr" tabindex="0" role="button" aria-label="Open Ledgr case study">
+<div><span class="live">Live on Vercel</span><h3>Ledgr</h3>
+<p>A school fee management system. Admins track collections, outstanding balances, and overdue invoices on one dashboard, manage students and guardians, and send fee reminders by email and SMS.</p>
+<div class="tags"><i>React</i><i>TypeScript</i><i>SQLAlchemy</i><i>Supabase</i><i>Row-level security</i></div>
+<a class="btn g" href="https://ledgr-azure.vercel.app" rel="noopener">Open the live app</a></div>
+<div class="shot"><div class="bar"><i></i><i></i><i></i><span>ledgr-azure.vercel.app/dashboard</span></div><img src="images/ledgr-dashboard.jpg" alt="Ledgr admin dashboard showing fees collected, outstanding balances, a collection goal gauge, a collection overview chart, recent activity, and school contacts" width="1600" height="815" loading="lazy"></div>
 </div>
 <div class="grid">
-<button class="pc" data-p="ledgr"><div class="t"><span>Live on Vercel</span><span>Client work style</span></div><h3>Ledgr</h3><p>School fee management with invoices, payment plans, and email and SMS reminders.</p><div class="tags"><i>React</i><i>TypeScript</i><i>SQLAlchemy</i></div></button>
+<button class="pc" data-p="hira"><div class="t"><span>Live on Render</span><span>Personal project</span></div><h3>AI Hiring Platform</h3><p>Recruiters post jobs and candidates upload resumes, which are ranked with TF-IDF and cosine similarity.</p><div class="tags"><i>FastAPI</i><i>Streamlit</i><i>scikit-learn</i></div></button>
 <button class="pc" data-p="power"><div class="t"><span>Live on OCI</span><span>Group project lead</span></div><h3>Power Consumption DB and API</h3><p>A relational database and CRUD API on household energy data, on a hand-built cloud network.</p><div class="tags"><i>Node.js</i><i>PostgreSQL</i><i>pm2</i></div></button>
 <a class="pc" href="#contact"><div class="t"><span>Next project</span></div><h3>Have something in mind?</h3><p>Tell me what you want to build. I'll come back with a plan and a timeline.</p><div class="tags"><i>Start a project</i></div></a>
 </div>
