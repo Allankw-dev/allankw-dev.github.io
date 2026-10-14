@@ -21,6 +21,9 @@ a{color:inherit;text-decoration:none}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--g);outline-offset:3px;border-radius:6px}
 .w{max-width:1120px;margin:0 auto;padding:0 28px}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(800px 520px at 82% -6%,rgba(44,240,78,.10),transparent 70%),radial-gradient(700px 500px at 0% 55%,rgba(44,240,78,.05),transparent 70%)}
+header,main,footer,.mq{position:relative;z-index:1}
 #bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--g);z-index:30}
 nav{position:fixed;top:14px;left:0;right:0;z-index:20;display:flex;justify-content:center;padding:0 16px}
 .pill{width:min(1040px,100%);display:flex;align-items:center;justify-content:space-between;background:#fff;color:#0a0a0a;border-radius:16px;padding:10px 12px 10px 22px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
@@ -155,6 +158,7 @@ dialog.pic{background:none;border:0;width:min(980px,94vw);overflow:visible}dialo
 </head>
 <body>
 <div id="bar"></div>
+<canvas id="bg" aria-hidden="true"></canvas>
 <nav><div class="pill">
 <a class="logo" href="#top">Allan Kamau<b> /&gt;</b></a>
 <ul><li><a href="#about">About</a></li><li><a href="#services">Services</a></li><li><a href="#work">Work</a></li><li><a href="#experience">Experience</a></li><li><a href="#process">Process</a></li></ul>
@@ -329,6 +333,16 @@ $$('[data-n]').forEach(e=>count(e,+e.dataset.n));
 fetch('https://api.github.com/users/Allankw-dev').then(r=>r.json()).then(u=>$$('[data-k]').forEach(e=>{if(u[e.dataset.k]!=null)count(e,u[e.dataset.k])})).catch(()=>{});
 fetch('https://api.github.com/users/Allankw-dev/repos?per_page=100&sort=updated').then(r=>r.json()).then(rs=>{const skip=['allankw-dev.github.io','power-consumption-db-api','Allankw-dev'];
 $('#repos').innerHTML=rs.filter(r=>!r.fork&&r.homepage&&!skip.includes(r.name)).slice(0,6).map(r=>`<a href="${r.homepage}" rel="noopener">${r.name.replace(/[-_]/g,' ')}<small>${r.description||r.language||'Live project'}</small></a>`).join('')}).catch(()=>{});
+// live background: drifting nodes that link up, with mouse parallax
+{const c=$('#bg'),x=c.getContext('2d');let W,H,N=[],mx=0,my=0,tx=0,ty=0;
+const init=()=>{W=c.width=innerWidth;H=c.height=innerHeight;N=Array.from({length:Math.min(95,Math.round(W/13))},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,z:Math.random()*.8+.2,g:Math.random()<.3}))};
+addEventListener('resize',init);addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
+const draw=()=>{mx+=(tx-mx)*.05;my+=(ty-my)*.05;x.clearRect(0,0,W,H);
+const P=N.map(n=>{if(!RM){n.x+=n.vx;n.y+=n.vy;if(n.x<-20)n.x=W+20;if(n.x>W+20)n.x=-20;if(n.y<-20)n.y=H+20;if(n.y>H+20)n.y=-20}return[n.x+mx*46*n.z,n.y+my*46*n.z,n]});
+for(let i=0;i<P.length;i++){for(let j=i+1;j<P.length;j++){const dx=P[i][0]-P[j][0],dy=P[i][1]-P[j][1],d=dx*dx+dy*dy;if(d<17000){x.strokeStyle=`rgba(44,240,78,${(1-d/17000)*.16})`;x.lineWidth=1;x.beginPath();x.moveTo(P[i][0],P[i][1]);x.lineTo(P[j][0],P[j][1]);x.stroke()}}
+const n=P[i][2];x.fillStyle=n.g?`rgba(44,240,78,${.35+n.z*.5})`:`rgba(220,230,225,${.15+n.z*.35})`;x.beginPath();x.arc(P[i][0],P[i][1],n.z*1.7,0,7);x.fill()}
+if(!RM)requestAnimationFrame(draw)};
+init();draw()}
 // scroll reveal
 if(!RM){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);setTimeout(()=>e.target.style.setProperty('--d','0s'),1300)}}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});
 const add=(sel,cls='')=>$$(sel).forEach((el,i)=>{el.classList.add('rv');if(cls)el.classList.add(cls);el.style.setProperty('--d',(Math.min(i%4,3)*.1)+'s');io.observe(el)});
