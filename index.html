@@ -366,8 +366,8 @@ $('#se').onclick=async()=>{const e=$('#e').value.trim(),d=$('#d').value.trim(),b
 if(!/^\S+@\S+\.\S+$/.test(e)||!d){say('Please add your email and a short message.','bad');return}
 b.disabled=true;b.textContent='Sending...';
 try{const r=await fetch('https://formsubmit.co/ajax/'+TO,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({name:$('#n').value||'Not given',company:$('#c').value||'Not given',email:e,need:$('#t').value,message:d,_subject:'Portfolio enquiry: '+$('#t').value,_template:'table',_captcha:'false'})});
-const j=await r.json();if(r.ok&&String(j.success)==='true'){say('Thanks, your message was sent. I will reply by email.','ok');$('#d').value=''}else throw new Error('x')}
-catch(_){say('Could not send right now. Please use WhatsApp, or email '+TO+'.','bad')}
+const j=await r.json().catch(()=>({}));if(r.ok&&String(j.success)==='true'){say('Thanks, your message was sent. I will reply by email.','ok');$('#d').value=''}else{const err=new Error(j.message||('Service replied '+r.status));err.svc=1;throw err}}
+catch(err){say((err.svc?'The mail service said: '+err.message:'Your browser blocked or lost the request (an ad blocker can do this).')+' You can also use WhatsApp, or email '+TO+'.','bad')}
 b.disabled=false;b.textContent='Send message'};
 $('#gm').onclick=e=>{e.preventDefault();window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TO+'&su='+encodeURIComponent(sub())+'&body='+encodeURIComponent(msg()),'_blank','noopener')};
 $('#mt').onclick=e=>{e.preventDefault();location.href='mailto:'+TO+'?subject='+encodeURIComponent(sub())+'&body='+encodeURIComponent(msg())};
