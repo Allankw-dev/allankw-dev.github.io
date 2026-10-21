@@ -141,6 +141,8 @@ h2{font-weight:800;font-size:clamp(30px,4.4vw,48px);line-height:1.08;letter-spac
 .fm textarea{min-height:96px;resize:vertical}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .fm .btn{width:100%;justify-content:center}
+.fm .alt.ok{color:#2cf04e}.fm .alt.bad{color:#ff8a7a}.fm .btn:disabled{opacity:.6;cursor:wait}
+.fm .alt{font-size:12px;color:#999;text-align:center;margin:14px 0 0}.fm .alt a{text-decoration:underline}
 .fm .b{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;margin-top:6px}
 @media(max-width:860px){.ct{grid-template-columns:1fr}}
 footer{padding:24px 0 48px;text-align:center;font-size:13px;color:#666}
@@ -290,10 +292,12 @@ dialog.pic{background:none;border:0;width:min(980px,94vw);overflow:visible}dialo
 <a class="lk" href="https://github.com/Allankw-dev" rel="noopener"><span class="ic">GH</span><span><small>GitHub</small>github.com/Allankw-dev</span></a>
 <a class="lk" href="https://ko-fi.com/allankamau20" rel="noopener"><span class="ic">Ko</span><span><small>Support my work</small>ko-fi.com/allankamau20</span></a></div>
 <div class="fm"><h3>Tell me about your project</h3><p>Fill this in and send it by email or WhatsApp.</p>
-<div class="two"><label>Your name<input id="n" placeholder="Jane Wanjiku"></label><label>Company (optional)<input id="c" placeholder="Acme Ltd"></label></div>
+<div class="two"><label>Your name<input id="n" placeholder="Jane Wanjiku" autocomplete="name"></label><label>Company (optional)<input id="c" placeholder="Acme Ltd"></label></div>
+<label>Your email<input id="e" type="email" placeholder="you@example.com" autocomplete="email"></label>
 <label>What do you need?<select id="t"><option>Freelance project</option><option>Internship</option><option>Full-time developer role</option><option>Collaboration</option></select></label>
 <label>Details<textarea id="d" placeholder="What are you building, and when do you need it?"></textarea></label>
-<div class="b"><button type="button" class="btn g" id="se">Send email</button><button type="button" class="btn" id="sw">WhatsApp</button></div></div>
+<div class="b"><button type="button" class="btn g" id="se">Send message</button><button type="button" class="btn" id="sw">WhatsApp</button></div>
+<p class="alt" id="st" role="status" aria-live="polite">Your message goes straight to my inbox. Prefer another way? <a href="#" id="gm">Open Gmail</a> or <a href="#" id="mt">your mail app</a>.</p></div>
 </div></div></section>
 </main>
 <footer>© 2026 Allan Kamau. Built with intent, deployed with care.</footer>
@@ -357,7 +361,16 @@ if(LINKEDIN)$$('.lil').forEach(a=>{a.href=LINKEDIN;a.hidden=false;const t=a.quer
 fetch(CV,{method:'HEAD'}).then(r=>{if(r.ok)$$('.cvl').forEach(a=>a.hidden=false)}).catch(()=>{});
 // contact form
 const msg=()=>{const n=$('#n').value||'there',c=$('#c').value,t=$('#t').value,d=$('#d').value;return`Hi Allan, I'm ${n}${c?' from '+c:''}. I'm reaching out about: ${t}.\n\n${d}`};
-$('#se').onclick=()=>location.href='mailto:allankamau517@gmail.com?subject='+encodeURIComponent('Project enquiry: '+$('#t').value)+'&body='+encodeURIComponent(msg());
+const sub=()=>'Project enquiry: '+$('#t').value,TO='allankamau517@gmail.com',st=$('#st'),say=(t,c)=>{st.textContent=t;st.className='alt '+(c||'')};
+$('#se').onclick=async()=>{const e=$('#e').value.trim(),d=$('#d').value.trim(),b=$('#se');
+if(!/^\S+@\S+\.\S+$/.test(e)||!d){say('Please add your email and a short message.','bad');return}
+b.disabled=true;b.textContent='Sending...';
+try{const r=await fetch('https://formsubmit.co/ajax/'+TO,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({name:$('#n').value||'Not given',company:$('#c').value||'Not given',email:e,need:$('#t').value,message:d,_subject:'Portfolio enquiry: '+$('#t').value,_template:'table',_captcha:'false'})});
+const j=await r.json();if(r.ok&&String(j.success)==='true'){say('Thanks, your message was sent. I will reply by email.','ok');$('#d').value=''}else throw new Error('x')}
+catch(_){say('Could not send right now. Please use WhatsApp, or email '+TO+'.','bad')}
+b.disabled=false;b.textContent='Send message'};
+$('#gm').onclick=e=>{e.preventDefault();window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+TO+'&su='+encodeURIComponent(sub())+'&body='+encodeURIComponent(msg()),'_blank','noopener')};
+$('#mt').onclick=e=>{e.preventDefault();location.href='mailto:'+TO+'?subject='+encodeURIComponent(sub())+'&body='+encodeURIComponent(msg())};
 $('#sw').onclick=()=>window.open('https://wa.me/254742996794?text='+encodeURIComponent(msg()),'_blank','noopener');
 </script>
 </body>
